@@ -25,10 +25,11 @@ class GridRepositoryImpl @Inject constructor() : GridRepository {
     }
 
     override fun updateGrid(cells: List<List<Cell>>, player: Player, status: Status): Grid {
-        return currentGrid.copy(
+        currentGrid = currentGrid.copy(
             cells = cells,
             currentPlayer = player,
             status = status,
         )
+        return currentGrid
     }
 }
