@@ -38,7 +38,7 @@ class GridRepositoryImplTest {
                 listOf(Cell.NONE, Cell.NONE, Cell.CROSS)
             ),
             currentPlayer = Player.ZERO,
-            status = Status.Winner(Player.ZERO)
+            status = Status.Winner(Player.ZERO, winnerLine = emptyList())
         )
         val actual = gridRepository.updateGrid(
             cells = listOf(
@@ -47,7 +47,7 @@ class GridRepositoryImplTest {
                 listOf(Cell.NONE, Cell.NONE, Cell.CROSS)
             ),
             player = Player.ZERO,
-            status = Status.Winner(Player.ZERO),
+            status = Status.Winner(Player.ZERO, winnerLine = emptyList()),
         )
         Assert.assertEquals(
             expected,

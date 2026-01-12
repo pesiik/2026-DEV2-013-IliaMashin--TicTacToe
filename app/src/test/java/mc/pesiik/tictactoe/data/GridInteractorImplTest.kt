@@ -80,7 +80,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.CROSS)
+        val status = Status.Winner(
+            player = Player.CROSS,
+            winnerLine = listOf(Pair(0, 0), Pair(1, 1), Pair(2, 2)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.ZERO, status = status) } returns expected
 
@@ -117,7 +120,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.CROSS)
+        val status = Status.Winner(
+            player = Player.CROSS,
+            winnerLine = listOf(Pair(0, 0), Pair(1, 0), Pair(2, 0)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.ZERO, status = status) } returns expected
 
@@ -154,7 +160,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.CROSS)
+        val status = Status.Winner(
+            player = Player.CROSS,
+            winnerLine = listOf(Pair(0, 0), Pair(0, 1), Pair(0, 2)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.ZERO, status = status) } returns expected
 
@@ -227,7 +236,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.ZERO)
+        val status = Status.Winner(
+            player = Player.ZERO,
+            winnerLine = listOf(Pair(0, 2), Pair(1, 1), Pair(2, 0)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.CROSS, status = status) } returns expected
 
@@ -264,7 +276,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.ZERO)
+        val status = Status.Winner(
+            player = Player.ZERO,
+            winnerLine = listOf(Pair(0, 1), Pair(1, 1), Pair(2, 1)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.CROSS, status = status) } returns expected
 
@@ -301,7 +316,10 @@ class GridInteractorImplTest {
             )
         )
         val expected: Grid = mockk()
-        val status = Status.Winner(player = Player.ZERO)
+        val status = Status.Winner(
+            player = Player.ZERO,
+            winnerLine = listOf(Pair(1, 0), Pair(1, 1), Pair(1, 2)),
+        )
         every { gridRepository.getGrid() } returns grid
         every { gridRepository.updateGrid(cells = updatedCells, player = Player.CROSS, status = status) } returns expected
 
@@ -416,6 +434,7 @@ class GridInteractorImplTest {
 
     @Test
     fun `GIVEN full grid with winner WHEN cross THEN get winner status`() {
+        val winnerLine = listOf(Pair(0, 0), Pair(0, 1), Pair(0, 2))
         val grid = Grid(
             cells = listOf(
                 listOf(Cell.CROSS, Cell.CROSS, Cell.CROSS),
@@ -423,11 +442,21 @@ class GridInteractorImplTest {
                 listOf(Cell.CROSS, Cell.ZERO, Cell.ZERO)
             ),
             currentPlayer = Player.CROSS,
-            status = Status.Winner(Player.CROSS),
+            status = Status.Winner(
+                player = Player.CROSS,
+                winnerLine = winnerLine,
+            ),
         )
         val expected: Grid = mockk()
         every { gridRepository.getGrid() } returns grid
-        every { gridRepository.updateGrid(cells = grid.cells, player = Player.CROSS, status = Status.Winner(Player.CROSS)) } returns expected
+        every { gridRepository.updateGrid(
+            cells = grid.cells,
+            player = Player.CROSS,
+            status = Status.Winner(
+                player = Player.CROSS,
+                winnerLine = winnerLine,
+            )
+        ) } returns expected
 
         val actual = interactor.cross(row = 2, col = 2)
         Assert.assertEquals(expected, actual)

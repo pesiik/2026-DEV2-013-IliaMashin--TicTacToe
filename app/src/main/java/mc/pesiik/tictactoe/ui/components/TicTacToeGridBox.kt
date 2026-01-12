@@ -45,7 +45,10 @@ private fun TicTacToeGrid(state: TicTacToeState, onCellTap: (row: Int, col: Int)
                         modifier = Modifier
                             .fillMaxHeight()
                             .weight(1f)
-                            .clickable {
+                            .clickable(
+                                interactionSource = null,
+                                indication = null,
+                            ) {
                                 onCellTap(row, col)
                             },
                         cellView = state.rows[row][col],

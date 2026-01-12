@@ -67,28 +67,32 @@ class GridInteractorImpl @Inject constructor(
     }
 
     private fun checkForWinner(cells: List<List<Cell>>, player: Player): Status {
-        // Check rows and columns
-        for (i in 0..2) {
-            if ((cells[i][0] != Cell.NONE && cells[i][0] == cells[i][1] && cells[i][1] == cells[i][2]) ||
-                (cells[0][i] != Cell.NONE && cells[0][i] == cells[1][i] && cells[1][i] == cells[2][i])
-            ) {
-                return Status.Winner(player)
+        val winningLines = listOf(
+            // Rows
+            listOf(Pair(0, 0), Pair(0, 1), Pair(0, 2)),
+            listOf(Pair(1, 0), Pair(1, 1), Pair(1, 2)),
+            listOf(Pair(2, 0), Pair(2, 1), Pair(2, 2)),
+            // Columns
+            listOf(Pair(0, 0), Pair(1, 0), Pair(2, 0)),
+            listOf(Pair(0, 1), Pair(1, 1), Pair(2, 1)),
+            listOf(Pair(0, 2), Pair(1, 2), Pair(2, 2)),
+            // Diagonals
+            listOf(Pair(0, 0), Pair(1, 1), Pair(2, 2)),
+            listOf(Pair(0, 2), Pair(1, 1), Pair(2, 0))
+        )
+
+        winningLines.forEach { line ->
+            val cellValues = line.map { (row, col) -> cells[row][col] }
+            val firstCell = cellValues[0]
+            if (firstCell != Cell.NONE && cellValues.all { it == firstCell }) {
+                return Status.Winner(player, line)
             }
         }
-        // Check diagonals
-        if ((cells[0][0] != Cell.NONE && cells[0][0] == cells[1][1] && cells[1][1] == cells[2][2]) ||
-            (cells[0][2] != Cell.NONE && cells[0][2] == cells[1][1] && cells[1][1] == cells[2][0])
-        ) {
-            return Status.Winner(player)
-        }
-        val isDraw = checkForDraw(cells)
-        if (isDraw) {
-            return Status.Draw
-        }
-        return Status.Active
-    }
 
-    private fun checkForDraw(cells: List<List<Cell>>): Boolean {
-        return cells.all { row -> row.all { cell -> cell != Cell.NONE } }
+        return if (cells.all { row -> row.all { it != Cell.NONE } }) {
+            Status.Draw
+        } else {
+            Status.Active
+        }
     }
 }
