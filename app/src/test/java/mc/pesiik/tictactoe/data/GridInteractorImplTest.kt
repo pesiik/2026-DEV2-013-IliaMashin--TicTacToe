@@ -413,4 +413,23 @@ class GridInteractorImplTest {
         val actual = interactor.zero(row = 0, col = 0)
         Assert.assertEquals(expected, actual)
     }
+
+    @Test
+    fun `GIVEN full grid with winner WHEN cross THEN get winner status`() {
+        val grid = Grid(
+            cells = listOf(
+                listOf(Cell.CROSS, Cell.CROSS, Cell.CROSS),
+                listOf(Cell.ZERO, Cell.ZERO, Cell.CROSS),
+                listOf(Cell.CROSS, Cell.ZERO, Cell.ZERO)
+            ),
+            currentPlayer = Player.CROSS,
+            status = Status.Winner(Player.CROSS),
+        )
+        val expected: Grid = mockk()
+        every { gridRepository.getGrid() } returns grid
+        every { gridRepository.updateGrid(cells = grid.cells, player = Player.CROSS, status = Status.Winner(Player.CROSS)) } returns expected
+
+        val actual = interactor.cross(row = 2, col = 2)
+        Assert.assertEquals(expected, actual)
+    }
 }
