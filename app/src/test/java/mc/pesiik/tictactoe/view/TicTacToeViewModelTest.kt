@@ -30,38 +30,27 @@ class TicTacToeViewModelTest {
     }
 
     @Test
-    fun `WHEN reset event THEN state is reset`() {
-        val resetGrid: Grid = mockk()
-        val expected: TicTacToeState = mockk()
-        every { gridInteractor.reset() } returns resetGrid
-        every { ticTacToeMapper.mapToState(resetGrid) } returns expected
-
-        viewModel = TicTacToeViewModel(
-            gridInteractor = gridInteractor,
-            ticTacToeMapper = ticTacToeMapper
-        )
-        viewModel.onEvent(TicTacToeScreenEvent.Reset)
-        Assert.assertEquals(expected, viewModel.state.value)
-    }
-
-    @Test
-    fun `WHEN cell tap events THEN grid is updated zero after cross`() {
+    fun `WHEN cell tap events AND reset THEN grid is updated zero after cross AND grid is reset`() {
         val updatedAfterCrossGrid: Grid = mockk()
         val updatedAfterZeroGrid: Grid = mockk()
         val afterCrossState = TicTacToeState(
+            rows = listOf(mockk()),
             currentPlayer = Player.ZERO,
         )
         val afterZeroState = TicTacToeState(
+            rows = listOf(mockk()),
             currentPlayer = Player.CROSS,
         )
 
         val resetGrid: Grid = mockk()
+        val resetState = TicTacToeState()
         every { gridInteractor.reset() } returns resetGrid
         every { gridInteractor.cross(row = 0, col = 0) } returns updatedAfterCrossGrid
         every { gridInteractor.zero(row = 0, col = 1) } returns updatedAfterZeroGrid
-        every { ticTacToeMapper.mapToState(resetGrid) } returns TicTacToeState()
+        every { ticTacToeMapper.mapToState(resetGrid) } returns resetState
         every { ticTacToeMapper.mapToState(updatedAfterCrossGrid) } returns afterCrossState
         every { ticTacToeMapper.mapToState(updatedAfterZeroGrid) } returns afterZeroState
+
 
         viewModel = TicTacToeViewModel(
             gridInteractor = gridInteractor,
@@ -72,5 +61,7 @@ class TicTacToeViewModelTest {
         Assert.assertEquals(afterCrossState, viewModel.state.value)
         viewModel.onEvent(TicTacToeScreenEvent.CellTap(row = 0, col = 1))
         Assert.assertEquals(afterZeroState, viewModel.state.value)
+        viewModel.onEvent(TicTacToeScreenEvent.Reset)
+        Assert.assertEquals(resetState, viewModel.state.value)
     }
 }
